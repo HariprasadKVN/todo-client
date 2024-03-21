@@ -5,18 +5,16 @@ import TodoAddForm from "./components/TodoForm";
 import Schedule from "./components/Schedule";
 
 const client = new ApolloClient({
-  uri: "http://localhost:5000/graphql",
+  uri: "http://localhost:5000/schedule",
   cache: new InMemoryCache(),
 });
 
 function App() {
   return (
     <ApolloProvider client={client}>
-      Subscriber: Pat Smith Policy: 1N32CB
-      <div>
-        Schedule an Appointment
+    
         <Schedule ></Schedule>
-      </div>
+    
       <div>
         Schedules: List of upcoming appoints
         <table className="table">

@@ -1,156 +1,184 @@
-import { gql, useMutation } from "@apollo/client";
 import { useState } from "react";
-import { GET_TODOS } from "./TodoList";
+import { gql, useMutation } from "@apollo/client";
 
-const ADD_TODO = gql`
-  mutation addTodo($title: String!, $completed: Boolean!) {
-    addTodo(title: $title, completed: $completed) {
+const ADD_SCHEDULE = gql`
+  mutation addSchedule(
+    $when: String!
+    $patientName: String!
+    $age: Int!
+    $gender: String
+    $contactNumber: String!
+    $doctorName: String!
+  ) {
+    addSchedule(
+      when: $when
+      patientName: $patientName
+      age: $age
+      gender: $gender
+      contactNumber: $contactNumber
+      doctorName: $doctorName
+    ) {
       id
-      title
-      completed
+      when
+      patientName
+      age
+      gender
+      contactNumber
+      doctorName
     }
   }
 `;
 
 const Schedule = () => {
-  const [title, setTitle] = useState("");
-  const completed = false;
+  const [name, setName] = useState(null);
+  const [age, setAge] = useState(0);
+  const [gender, setGender] = useState("Select");
+  const [contact, setContact] = useState("");
+  const [when, setWhen] = useState("");
+  const [doctorName, setDoctorName] = useState("");
 
-  const [addTodo] = useMutation(ADD_TODO, {
-    variables: { title, completed },
-    refetchQueries: [{ query: GET_TODOS }],
-  });
+  const [addSchedule, { data, loading, error }] = useMutation(ADD_SCHEDULE);
 
-  // const [addTodo] = useMutation(ADD_TODO, {
-  //   update(cache, { data: { addTodo } }) {
-  //     cache.modify({
-  //       fields: {
-  //         todos(existingTodos = []) {
-  //           const newTodoRef = cache.writeFragment({
-  //             id: "65f9b0cd587e37ddc7e8bc7c",
-  //             data: addTodo,
-  //             fragment: gql`
-  //               fragment NewTodo on Todo {
-  //                 id
-  //                 title
-  //                 completed
-  //               }
-  //             `,
-  //           });
-  //           return [...existingTodos, newTodoRef];
-  //         },
-  //       },
-  //     });
-  //   },
-  // });
-
-  const UPDATE_DOCUMENT = gql`
-    mutation updateDocument($id: ID!, $title: String!, $completed: Boolean!) {
-      updateDocument(id: $id, title: $title, completed: $completed) {
-        id
-        title
-      }
-    }
-  `;
-
-  const [updateDocument] = useMutation(UPDATE_DOCUMENT);
-  //const [addTodo ] = useMutation(ADD_TODO);
-
-  async function handleUpdateDocument(id, title, completed) {
+  async function addAppointment() {
+    console.log("addAppoin");
     try {
-      const { data } = await updateDocument({
-        variables: { id, title, completed },
+      const x = await addSchedule({
+        variables: {
+          when: when,
+          patientName: name,
+          age: Number(age),
+          gender: gender,
+          contactNumber: contact,
+          doctorName: doctorName,
+        },
       });
-      console.log("Document updated:", data.updateDocument);
-    } catch (error) {
-      console.error("Error updating document:", error);
-    }
+    } catch {}
+    setWhen("");
+    setName(null);
+    setAge("");
+    setGender("");
+    setContact("");
+    setDoctorName("");
   }
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    //handleUpdateDocument('65f9362b17c7431440cd9323','Some other new title', true);
-    addTodo();
-    // addTodo({
-    //   variables: { title: "test 15", completed: true },
-    // });
-    setTitle("");
-  };
+  if (loading) return <p>Lodaing...</p>;
+  // if (error) return <p>{error.message}</p>;
+
   return (
     <>
-      {/* <form className="form-group">
-        <label>Enter Task</label>
-        <input
-          className="form-control"
-          placeholder="Enter the task"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          type="text"
-        />
-        <button className="btn btn-primary" onClick={onSubmit}>
-          {" "}
-          Add Task{" "}
-        </button>
-      </form> */}
-      <div className="card m-1 p-2">
-        <form className="form-group">
-          <label>When</label>
-          <input className="form-control" type="datetime-local" />
-          <label>Name of Patient</label>
-          <input
-            className="form-control"
-            placeholder="Patient's Name"
-            onChange={(e) => setTitle(e.target.value)}
-            type="text"
-          />
+      
+      <p>{error?error.message:""}</p>
+        
+      <div className="card border-primary border-opacity-75">
+        <div className="card-header bg-primary bg-opacity-75">
+          Book an Appointment
+        </div>
+        <div className="card-body">
+          <h6 className="card-title">Pat Smith</h6>
 
-          <div className="row">
-            <div className="col-3">
-              <label>Age</label>
-              <input
-                className="form-control"
-                placeholder="Patient Age"
-                onChange={(e) => setTitle(e.target.value)}
-                type="text"
-              />
+          <form>
+            <div className="row mb-1">
+              <label htmlFor="when" className="col-sm-3 col-form-label">
+                When
+              </label>
+              <div className="col-sm-9">
+                <input
+                  type="datetime-local"
+                  className="form-control"
+                  id="when"
+                  onChange={(e) => setWhen(e.target.value.toString())}
+                  value={when}
+                />
+              </div>
             </div>
-            <div className="col">
-              <label>Gender</label>
-              <select className="form-control">
-                <option>Select</option>
-                <option>Female</option>
-                <option>Male</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div className="col">
-              <label>Contact Number</label>
-              <input
-                className="form-control"
-                placeholder="Contact Number"
-                onChange={(e) => setTitle(e.target.value)}
-                type="text"
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <label>Doctor</label>
-              <input
-                className="form-control"
-                placeholder="Enter the Doctor"
-                onChange={(e) => setTitle(e.target.value)}
-                type="text"
-              />
-            </div>
-          </div>
 
-          <button className="btn btn-primary" onClick={onSubmit}>
-            Add Task
-          </button>
-        </form>
+            <div className="row mb-1">
+              <label htmlFor="patientName" className="col-sm-3 col-form-label">
+                Patient Name
+              </label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="patientName"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="row mb-1">
+              <label htmlFor="age" className="col-sm-3 col-form-label">
+                Age
+              </label>
+              <div className="col-sm-3">
+                <input
+                  type="number"
+                  className="form-control"
+                  id="age"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                />
+              </div>
+
+              <label htmlFor="gender" className="col-sm-2 col-form-label">
+                Gender
+              </label>
+              <div className="col-sm-4">
+                <select
+                  id="gender"
+                  className="form-control"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                >
+                  <option>Select</option>
+                  <option>Female</option>
+                  <option>Male</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div className="row mb-1">
+              <label htmlFor="number" className="col-sm-3 col-form-label">
+                Contact Number
+              </label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="number"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="row mb-1">
+              <label htmlFor="number" className="col-sm-3 col-form-label">
+                Physician/Provider
+              </label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="number"
+                  value={doctorName}
+                  onChange={(e) => setDoctorName(e.target.value)}
+                />
+              </div>
+            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                addAppointment();
+              }}
+              className="btn btn-primary"
+            >
+              Book
+            </button>
+          </form>
+        </div>
       </div>
     </>
   );
 };
+
 export default Schedule;
