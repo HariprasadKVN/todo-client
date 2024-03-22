@@ -77,14 +77,14 @@ const Schedule = () => {
           <h6 className="card-title">Pat Smith</h6>
 
           <form>
-            <div className="row mb-1">
+            <div className="row">
               <label htmlFor="when" className="col-sm-3 col-form-label">
                 When
               </label>
               <div className="col-sm-9">
                 <input
                   type="datetime-local"
-                  className="form-control"
+                  className="form-control form-control-sm"
                   id="when"
                   onChange={(e) => setWhen(e.target.value.toString())}
                   value={when}
@@ -92,28 +92,28 @@ const Schedule = () => {
               </div>
             </div>
 
-            <div className="row mb-1">
+            <div className="row">
               <label htmlFor="patientName" className="col-sm-3 col-form-label">
                 Patient Name
               </label>
               <div className="col-sm-9">
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control form-control-sm"
                   id="patientName"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
             </div>
-            <div className="row mb-1">
+            <div className="row">
               <label htmlFor="age" className="col-sm-3 col-form-label">
                 Age
               </label>
               <div className="col-sm-3">
                 <input
                   type="number"
-                  className="form-control"
+                  className="form-control form-control-sm"
                   id="age"
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
@@ -126,7 +126,7 @@ const Schedule = () => {
               <div className="col-sm-4">
                 <select
                   id="gender"
-                  className="form-control"
+                  className="form-control form-control-sm"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
                 >
@@ -137,28 +137,28 @@ const Schedule = () => {
                 </select>
               </div>
             </div>
-            <div className="row mb-1">
+            <div className="row">
               <label htmlFor="number" className="col-sm-3 col-form-label">
                 Contact Number
               </label>
               <div className="col-sm-9">
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control form-control-sm"
                   id="number"
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                 />
               </div>
             </div>
-            <div className="row mb-1">
+            <div className="row">
               <label htmlFor="number" className="col-sm-3 col-form-label">
                 Physician/Provider
               </label>
               <div className="col-sm-9">
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control form-control-sm"
                   id="number"
                   value={doctorName}
                   onChange={(e) => setDoctorName(e.target.value)}
@@ -170,7 +170,7 @@ const Schedule = () => {
                 e.preventDefault();
                 addAppointment();
               }}
-              className="btn btn-primary"
+              className="btn btn-sm btn-primary"
             >
               Book
             </button>
