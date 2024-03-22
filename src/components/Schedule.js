@@ -81,7 +81,16 @@ const Schedule = () => {
               <label htmlFor="when" className="col-sm-3 col-form-label">
                 When
               </label>
-              <div className="col-sm-9">
+              <div className="col-sm-4">
+                <input
+                  type="date"
+                  className="form-control form-control-sm"
+                  id="when"
+                  onChange={(e) => setWhen(e.target.value.toString())}
+                  value={when}
+                />
+              </div>
+              <div className="col-sm-4">
                 <input
                   type="datetime-local"
                   className="form-control form-control-sm"
